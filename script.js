@@ -110,6 +110,13 @@ function renderNumberPlatform() {
         numberButton.addEventListener('click', handleNumberClick);
         numberPlatformElement.appendChild(numberButton);
     }
+    
+    // NEW: Create and add the Erase button
+    const eraseButton = document.createElement('div');
+    eraseButton.classList.add('number-button', 'erase-button');
+    eraseButton.innerHTML = '<i class="fas fa-eraser"></i>';
+    eraseButton.addEventListener('click', handleEraseClick);
+    numberPlatformElement.appendChild(eraseButton);
 }
 
 function handleCellClick(event) {
@@ -122,7 +129,6 @@ function handleCellClick(event) {
 
     highlightRelatedCells(row, col);
     
-    // UPDATED: Highlight all cells with the same number
     const clickedNumberText = selectedCell.textContent;
     if (clickedNumberText !== '') {
         const clickedNumber = parseInt(clickedNumberText);
@@ -133,7 +139,8 @@ function handleCellClick(event) {
         });
     }
 
-    if (selectedCell.textContent === '') {
+    // UPDATED: Allow editing of any non-fixed cell
+    if (!selectedCell.classList.contains('fixed')) {
         numberPlatformElement.style.display = 'grid';
     } else {
         numberPlatformElement.style.display = 'none';
@@ -154,7 +161,6 @@ function highlightRelatedCells(row, col) {
 }
 
 function clearHighlights() {
-    // UPDATED: Clears all types of highlights
     document.querySelectorAll('.cell').forEach(cell => {
         cell.classList.remove('highlight', 'selected', 'same-number-highlight');
     });
@@ -163,7 +169,7 @@ function clearHighlights() {
 function handleNumberClick(event) {
     if (!selectedCell || selectedCell.classList.contains('fixed')) return;
 
-    const number = parseInt(event.target.dataset.number);
+    const number = parseInt(event.currentTarget.dataset.number);
     const row = parseInt(selectedCell.dataset.row);
     const col = parseInt(selectedCell.dataset.col);
 
@@ -181,6 +187,24 @@ function handleNumberClick(event) {
         selectedCell.classList.add('wrong');
         loseLife();
     }
+    
+    numberPlatformElement.style.display = 'none';
+    clearHighlights();
+    selectedCell = null;
+}
+
+// NEW: Function to handle the erase button click
+function handleEraseClick() {
+    if (!selectedCell || selectedCell.classList.contains('fixed')) return;
+
+    const row = parseInt(selectedCell.dataset.row);
+    const col = parseInt(selectedCell.dataset.col);
+
+    board[row][col] = null; // Clear from board state
+    selectedCell.textContent = ''; // Clear from DOM
+    selectedCell.classList.remove('correct', 'wrong');
+
+    checkNumberPlatform(); // Re-enable number button if it was disabled
     
     numberPlatformElement.style.display = 'none';
     clearHighlights();
@@ -246,18 +270,18 @@ function loseLife() {
 
 function endGame(isWin) {
     stopTimer();
-    messageText.classList.remove('win-animation', 'lose-animation'); // Clear old animations
+    messageText.classList.remove('win-animation', 'lose-animation');
     
     endGameMessage.classList.add('visible');
     playAgainBtn.style.display = 'block';
 
     if (isWin) {
         messageText.textContent = "YOU WON!";
-        messageText.classList.add('win-animation'); // UPDATED: Add win animation class
+        messageText.classList.add('win-animation');
         celebrationAnimation();
     } else {
         messageText.textContent = "GAME OVER";
-        messageText.classList.add('lose-animation'); // UPDATED: Add lose animation class
+        messageText.classList.add('lose-animation');
         revealAnswers();
     }
 }
@@ -294,7 +318,6 @@ function resetGame() {
     selectedCell = null;
     endGameMessage.classList.remove('visible');
     playAgainBtn.style.display = 'none';
-    // UPDATED: Clear animation classes on reset
     messageText.classList.remove('win-animation', 'lose-animation');
 
     livesContainer.innerHTML = `
@@ -316,4 +339,4 @@ document.addEventListener('DOMContentLoaded', () => {
     playAgainBtn.addEventListener('click', resetGame);
     resetGame();
 });
-          
+            

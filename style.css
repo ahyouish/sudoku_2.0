@@ -1,5 +1,4 @@
 body {
-    /* UPDATED: Using Poppins font for a professional aesthetic */
     font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
@@ -82,7 +81,6 @@ h1 {
     transition: background-color 0.15s;
 }
 
-/* --- CORRECTED: Rules for 3x3 box borders --- */
 .cell:nth-child(n+28):nth-child(-n+36),
 .cell:nth-child(n+55):nth-child(-n+63) {
     border-top: 2px solid #333;
@@ -91,7 +89,6 @@ h1 {
 .cell:nth-child(9n+7) {
     border-left: 2px solid #333;
 }
-/* --- END CORRECTION --- */
 
 .cell.fixed {
     color: #000;
@@ -106,7 +103,6 @@ h1 {
     background-color: #a7d3ff;
 }
 
-/* NEW: Style for highlighting same numbers */
 .cell.same-number-highlight {
     background-color: #d4edda;
     transition: background-color 0.2s;
@@ -123,14 +119,15 @@ h1 {
 
 .number-platform {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    /* UPDATED: Changed grid to fit 10 buttons (9 numbers + 1 erase) */
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
     padding: 10px;
     margin-top: 20px;
 }
 
 .number-button {
-    width: 45px;
+    width: 100%; /* Use full grid column width */
     height: 45px;
     display: flex;
     justify-content: center;
@@ -142,6 +139,7 @@ h1 {
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.1s, background-color 0.1s;
+    box-sizing: border-box;
 }
 
 .number-button:hover {
@@ -155,6 +153,15 @@ h1 {
     opacity: 0.6;
     transform: scale(1);
 }
+
+/* NEW: Style for the erase button */
+.erase-button {
+    background-color: #f0ad4e; /* A distinct orange color */
+}
+.erase-button:hover {
+    background-color: #ec9b2e;
+}
+/* END NEW STYLE */
 
 .end-game-message {
     position: absolute;
@@ -189,7 +196,6 @@ h1 {
 
 #play-again-btn:hover { background-color: #218838; }
 
-/* NEW: Win and Loss Animations */
 .win-animation {
     color: #28a745;
     animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
@@ -210,7 +216,6 @@ h1 {
   10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
   20%, 40%, 60%, 80% { transform: translateX(10px); }
 }
-/* END NEW ANIMATIONS */
 
 .confetti-container {
     position: fixed;
@@ -234,4 +239,4 @@ h1 {
 @keyframes confetti-fall {
     0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
+      }
